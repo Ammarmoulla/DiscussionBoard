@@ -95,7 +95,8 @@ def new_topic(request, board_id):
 def topic_posts(request, board_id, topic_id):
 
     topic = get_object_or_404(Topic, board__pk=board_id, pk=topic_id)
-
+    topic.views += 1
+    topic.save()
     context = {
         "topic": topic,
     }
