@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 # Create your views here.
 
 # def home(request):
@@ -27,7 +28,7 @@ def home(request):
 def board_topics(request, board_id):
     context = {}
     board = get_object_or_404(Board, pk=board_id)
-    topics = board.topics.all()
+    topics = board.topics.order_by("-created_at").annotate(comments=Count("posts"))
     context = {
       "board": board,
       "topics": topics,
