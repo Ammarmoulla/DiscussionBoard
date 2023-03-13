@@ -5,6 +5,7 @@ from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.views.generic import UpdateView, ListView
 # Create your views here.
 
 # def home(request):
@@ -16,14 +17,20 @@ from django.db.models import Count
 #     html_response = "<br>".join(boards_name)
 #     return HttpResponse(html_response)
 
-def home(request):
+# def home(request):
 
-    boards = Board.objects.all()
+#     boards = Board.objects.all()
 
-    context = {
-        "boards": boards,
-    }
-    return render(request, "boards/home.html", context=context)
+#     context = {
+#         "boards": boards,
+#     }
+#     return render(request, "boards/home.html", context=context)
+
+class BoardListView(ListView):
+    model = Board
+    context_object_name = "boards"
+    template_name = "boards/home.html"
+
 
 def board_topics(request, board_id):
     context = {}
