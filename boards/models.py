@@ -33,7 +33,10 @@ class Post(models.Model):
     message = models.CharField(max_length=4000, null=True)
     topic = models.ForeignKey(Topic, related_name="posts", on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, related_name="posts", on_delete=models.CASCADE)
+    updated_by = models.ForeignKey(User, related_name="+", on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
 
     def __str__(self):
         truncatord_message = Truncator(self.message)

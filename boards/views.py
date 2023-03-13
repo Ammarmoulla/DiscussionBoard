@@ -5,7 +5,9 @@ from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-from django.views.generic import UpdateView, ListView
+from django.views.generic import UpdateView, ListView, CreateView
+from django.utils.decorators import method_decorator
+# from django.utils import timezone
 # Create your views here.
 
 # def home(request):
@@ -130,4 +132,18 @@ def reply_topic(request, board_id, topic_id):
     }
 
     return render(request, "boards/reply_topic.html", context=context)
+
+@method_decorator(login_required, name="dispatch")
+class UpdatePostView(UpdateView):
+    model = Post
+    fields = ("message", )
+    template_name = "boards/edit_post.html"
+    context_object_name = "post"
+    pk_url_kwarg = "post_id"
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.updated_by = self.request.user
+        post.save()
+        return redirect("topic_posts", board_id=post.topic.board.pk, topic_id=post.topic.pk)
 
