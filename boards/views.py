@@ -8,7 +8,7 @@ from django.db.models import Count
 from django.views.generic import UpdateView, ListView, CreateView
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-# from django.utils import timezone
+from django.utils import timezone
 # Create your views here.
 
 # def home(request):
@@ -118,8 +118,12 @@ def new_topic(request, board_id):
 def topic_posts(request, board_id, topic_id):
 
     topic = get_object_or_404(Topic, board__pk=board_id, pk=topic_id)
-    topic.views += 1
-    topic.save()
+
+    session_key = "view_topic_{}".format(topic.pk)
+    if not request.session.get(session_key, False):
+        topic.views += 1
+        topic.save()
+        request.session[session_key] = True
     context = {
         "topic": topic,
     }
@@ -137,7 +141,10 @@ def reply_topic(request, board_id, topic_id):
             post = form.save(commit=False)
             post.topic = topic
             post.created_by = request.user
+            post.updated_by = request.user
+            post.updated_at = timezone.now()
             post.save()
+
             return redirect("topic_posts", board_id, topic.pk)
     context = {
         "form": form,
@@ -157,6 +164,7 @@ class UpdatePostView(UpdateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.updated_by = self.request.user
+        post.updated_at = timezone.now()
         post.save()
         return redirect("topic_posts", board_id=post.topic.board.pk, topic_id=post.topic.pk)
 

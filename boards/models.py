@@ -23,6 +23,8 @@ class Topic(models.Model):
     board = models.ForeignKey(Board, related_name="topics", on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, related_name="topics", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
     views = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -35,7 +37,7 @@ class Post(models.Model):
     created_by = models.ForeignKey(User, related_name="posts", on_delete=models.CASCADE)
     updated_by = models.ForeignKey(User, related_name="+", on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(null=True)
     
 
     def __str__(self):
