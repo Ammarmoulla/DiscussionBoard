@@ -6,6 +6,8 @@ from django.urls import reverse_lazy
 from django.views.generic import UpdateView
 from django.contrib.auth.models import User
 # Create your views here.
+
+
 def signup(request):
     context = {}
     form = SipnUpForm()

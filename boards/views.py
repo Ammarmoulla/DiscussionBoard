@@ -34,28 +34,41 @@ class BoardListView(ListView):
     context_object_name = "boards"
     template_name = "boards/home.html"
 
+class TopicListView(ListView):
+    model = Topic
+    context_object_name = "topics"
+    template_name = "boards/topics.html"
 
-def board_topics(request, board_id):
-    context = {}
-    board = get_object_or_404(Board, pk=board_id)
-    queryset = board.topics.order_by("-created_at").annotate(comments=Count("posts"))
-    page = request.GET.get("page", 1)
-    paginator = Paginator(queryset, 20)
-
-    try:
-        topics = paginator.page(page)
-
-    except PageNotAnInteger:
-        topics = paginator.page(1)
+    def get_context_data(self, **kwargs):
+        kwargs["board"] = self.board
+        return super().get_context_data(**kwargs)
     
-    except EmptyPage:
-        topics = paginator.page(paginator.num_pages)
+    def get_queryset(self):
+        board_id = self.kwargs.get("board_id")
+        self.board = get_object_or_404(Board, pk=board_id)
+        return self.board.topics.order_by("-created_at").annotate(comments=Count("posts"))
+            
+# def board_topics(request, board_id):
+#     context = {}
+#     board = get_object_or_404(Board, pk=board_id)
+#     queryset = board.topics.order_by("-created_at").annotate(comments=Count("posts"))
+#     page = request.GET.get("page", 1)
+#     paginator = Paginator(queryset, 20)
 
-    context = {
-      "board": board,
-      "topics": topics,
-    }
-    return render(request, "boards/topics.html", context=context)
+#     try:
+#         topics = paginator.page(page)
+
+#     except PageNotAnInteger:
+#         topics = paginator.page(1)
+    
+#     except EmptyPage:
+#         topics = paginator.page(paginator.num_pages)
+
+#     context = {
+#       "board": board,
+#       "topics": topics,
+#     }
+#     return render(request, "boards/topics.html", context=context)
 
 # def new_topic(request, board_id):
     
