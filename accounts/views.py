@@ -3,26 +3,30 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login as auth_login
 from .forms import *
 from django.urls import reverse_lazy
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, CreateView
 from django.contrib.auth.models import User
 # Create your views here.
 
 
-def signup(request):
-    context = {}
-    form = SipnUpForm()
-    if request.method == "POST":
-        form = SipnUpForm(request.POST)
-        print(form)
-        if form.is_valid():
-            user = form.save()
-            auth_login(request, user)
-            return redirect("home")
-    context = {
-        "form": form,
-    }
-    return render(request, "accounts/signup.html", context=context)
+# def signup(request):
+#     context = {}
+#     form = SipnUpForm()
+#     if request.method == "POST":
+#         form = SipnUpForm(request.POST)
+#         print(form)
+#         if form.is_valid():
+#             user = form.save()
+#             auth_login(request, user)
+#             return redirect("home")
+#     context = {
+#         "form": form,
+#     }
+#     return render(request, "accounts/signup.html", context=context)
 
+class SignUpView(CreateView):
+    template_name = "accounts/signup.html"
+    form_class = SipnUpForm
+    success_url = reverse_lazy("login")
 
 class ProfileUpdateView(UpdateView):
     model = User
