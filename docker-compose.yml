@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  django-app:
+    container_name: django-app-continer
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    command: ./start.sh
+

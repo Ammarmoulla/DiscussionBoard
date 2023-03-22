@@ -27,6 +27,7 @@ class SignUpView(CreateView):
     template_name = "accounts/signup.html"
     form_class = SipnUpForm
     success_url = reverse_lazy("login")
+    
 
 class ProfileUpdateView(UpdateView):
     model = User
